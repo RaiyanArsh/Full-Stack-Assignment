@@ -56,3 +56,6 @@ Once the server is running, you can access the API documentation:
 
 ### Swagger UI: http://localhost:8000/docs
 ### Redoc: http://localhost:8000/redoc
+
+### Note: Too get your grop api key, refer to below website
+- https://console.groq.com/keys
