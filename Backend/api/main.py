@@ -29,7 +29,6 @@ class Message(BaseModel):
 # Groq API URL and headers
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-# GROQ_API_KEY = "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"  # Replace with your Groq API Key
 headers = {
     "Content-Type": "application/json",
     "Authorization": f"Bearer {GROQ_API_KEY}",
