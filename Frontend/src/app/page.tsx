@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useState, ChangeEvent, FormEvent } from "react";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import { CiFileOn } from "react-icons/ci";
-import { FaUserAlt } from "react-icons/fa";
 import { AiOutlineRobot } from "react-icons/ai";
 import logoSrc from "../../public/Icon.svg";
 import { toast, ToastContainer } from "react-toastify";
@@ -24,9 +23,6 @@ export default function LandingPage() {
   const [pdfContent, setPdfContent] = useState<string>("");
   const [uploadError, setError] = useState<boolean>(false);
   const [isSessionStarted, setIsSessionStarted] = useState<boolean>(false);
-  const uploadEndpoint = process.env.NEXT_PUBLIC_UPLOAD_PDF_ENDPOINT;
-  const chatCompletionEndpoint =
-    process.env.NEXT_PUBLIC_CHAT_COMPLETION_ENDPOINT;
 
   // Handle PDF upload
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -38,7 +34,7 @@ export default function LandingPage() {
       formData.append("file", file);
 
       try {
-        const response = await fetch(`${uploadEndpoint}`, {
+        const response = await fetch("http://127.0.0.1:8000/upload-pdf/", {
           method: "POST",
           body: formData,
         });
@@ -57,6 +53,8 @@ export default function LandingPage() {
       toast.info("Please upload a valid PDF file.");
     }
   };
+
+  // Upload Button Functionality
 
   const handleUploadClick = () => {
     if (isSessionStarted) {
@@ -103,7 +101,7 @@ export default function LandingPage() {
         },
       ];
 
-      const response = await fetch(`${chatCompletionEndpoint}`, {
+      const response = await fetch("http://127.0.0.1:8000/chat-completion/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -126,9 +124,11 @@ export default function LandingPage() {
 
   return (
     <div className="flex flex-col h-screen justify-between">
+      {/* Navbar */}
       <header className="flex justify-between items-center p-4 border-b">
         <div className="flex items-center space-x-2">
           <span className="text-lg font-bold flex">
+            {/* Logo and Name */}
             <Image src={logoSrc} alt="Logo" className="w-10 h-10" />
             <span className="flex flex-col">
               planet{" "}
@@ -139,6 +139,7 @@ export default function LandingPage() {
           </span>
         </div>
         <div className="flex flex-row items-center space-x-8">
+          {/* File Upload */}
           {selectedFile && (
             <div className="flex space-x-2 items-center">
               {uploadError ? (
@@ -162,6 +163,7 @@ export default function LandingPage() {
               </p>
             </div>
           )}
+          {/* Upload Button */}
           <button
             onClick={handleUploadClick}
             className={`flex items-center space-x-2 px-8 py-2 border rounded-lg bg-white transition-all duration-300 ${
@@ -192,7 +194,7 @@ export default function LandingPage() {
           className="hidden"
         />
       </header>
-
+      {/* Main Chat Area */}
       <div className="flex-1 bg-gray-50 p-4 overflow-y-auto">
         <div className="flex flex-col space-y-10 w-4/5 justify-center m-auto">
           {messages.map((message, index) => (
@@ -202,11 +204,6 @@ export default function LandingPage() {
                 message.sender === "user" ? "justify-end" : "justify-start"
               }`}
             >
-              {/* {message.sender === "user" && (
-                <div className="bg-blue-500 p-2 flex items-center justify-center rounded-full">
-                  <FaUserAlt className="text-white w-4 h-4" />
-                </div>
-              )} */}
               {message.sender !== "user" && (
                 <div className="items-start">
                   <div className="bg-gray-500 p-2 flex items-center justify-center rounded-full">
@@ -227,6 +224,7 @@ export default function LandingPage() {
           ))}
         </div>
       </div>
+      {/* Footer for input box */}
       <form
         onSubmit={handleSendMessage}
         className="flex items-center p-4 w-4/5 justify-center m-auto border-t-0 bg-transparent"
