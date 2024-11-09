@@ -34,10 +34,13 @@ export default function LandingPage() {
       formData.append("file", file);
 
       try {
-        const response = await fetch("http://127.0.0.1:8000/upload-pdf/", {
-          method: "POST",
-          body: formData,
-        });
+        const response = await fetch(
+          "https://chat-with-pdf-backend.vercel.app/upload-pdf/",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
         if (!response.ok) {
           throw new Error("Failed to upload PDF");
         }
@@ -101,11 +104,14 @@ export default function LandingPage() {
         },
       ];
 
-      const response = await fetch("http://127.0.0.1:8000/chat-completion/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        "https://chat-with-pdf-backend.vercel.app/chat-completion/",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to get response from chat API");
@@ -127,10 +133,13 @@ export default function LandingPage() {
       {/* Navbar */}
       <header className="flex justify-between items-center p-4 border-b">
         <div className="flex items-center space-x-2">
-          <span className="text-lg font-bold flex">
-            {/* Logo and Name */}
-            <Image src={logoSrc} alt="Logo" className="w-10 h-10" />
-            <span className="flex flex-col">
+          <span className="text-lg font-bold flex items-center">
+            <Image
+              src={logoSrc}
+              alt="Logo"
+              className="w-8 h-8 md:w-10 md:h-10"
+            />
+            <span className="flex-col ml-1 md:ml-2 hidden md:flex">
               planet{" "}
               <small className="text-xs font-normal">
                 formerly <span className="text-green-600 font-bold">DPhi</span>
@@ -138,35 +147,29 @@ export default function LandingPage() {
             </span>
           </span>
         </div>
-        <div className="flex flex-row items-center space-x-8">
+        <div className="flex items-center space-x-4 md:space-x-8">
           {/* File Upload */}
           {selectedFile && (
-            <div className="flex space-x-2 items-center">
+            <div className="flex space-x-2 items-center truncate max-w-xs">
               {uploadError ? (
-                <VscError
-                  className="text-red-700 border w-8 h-8 p-1 rounded-md border-red-300"
-                  size={20}
-                />
+                <VscError className="text-red-700 border w-6 h-6 md:w-8 md:h-8 p-1 rounded-md border-red-300" />
               ) : (
-                <CiFileOn
-                  className="text-green-700 border w-8 h-8 p-1 rounded-md border-green-300"
-                  size={20}
-                />
+                <CiFileOn className="text-green-700 border w-6 h-6 md:w-8 md:h-8 p-1 rounded-md border-green-300" />
               )}
-
               <p
-                className={`text-center text-sm flex items-center space-x-2 truncate max-w-[calc(100%-2rem)] ${
+                className={`text-sm truncate max-w-[100px] md:max-w-xs ${
                   uploadError ? "text-red-700" : "text-green-700"
                 }`}
+                title={selectedFile.name} // Shows full file name on hover
               >
-                {`${selectedFile.name}`}
+                {selectedFile.name}
               </p>
             </div>
           )}
           {/* Upload Button */}
           <button
             onClick={handleUploadClick}
-            className={`flex items-center space-x-2 px-8 py-2 border rounded-lg bg-white transition-all duration-300 ${
+            className={`flex items-center space-x-2 px-4 py-2 md:px-8 md:py-2 border rounded-lg bg-white transition-all duration-300 ${
               isSessionStarted
                 ? "hover:border-red-600 hover:bg-red-50"
                 : "hover:border-black hover:bg-gray-50"
@@ -175,17 +178,18 @@ export default function LandingPage() {
             {isSessionStarted ? (
               <>
                 <MdDeleteOutline className="text-xl text-red-500" />
-                <span className="text-red-500">{"Clear Session"}</span>
+                <span className="text-red-500 hidden md:block">
+                  Clear Session
+                </span>
               </>
             ) : (
               <>
                 <IoIosAddCircleOutline className="text-xl" />
-                <span>Upload PDF</span>
+                <span className="hidden md:block">Upload PDF</span>
               </>
             )}
           </button>
         </div>
-
         <input
           id="fileInput"
           type="file"
@@ -195,24 +199,24 @@ export default function LandingPage() {
         />
       </header>
       {/* Main Chat Area */}
-      <div className="flex-1 bg-gray-50 p-4 overflow-y-auto">
-        <div className="flex flex-col space-y-10 w-4/5 justify-center m-auto">
+      <div className="flex-1 bg-gray-50 p-2 md:p-4 overflow-y-auto">
+        <div className="flex flex-col space-y-6 md:space-y-10 w-full md:w-4/5 justify-center m-auto">
           {messages.map((message, index) => (
             <div
               key={index}
-              className={`flex space-x-4 ${
+              className={`flex space-x-2 md:space-x-4 ${
                 message.sender === "user" ? "justify-end" : "justify-start"
               }`}
             >
               {message.sender !== "user" && (
-                <div className="items-start">
-                  <div className="bg-gray-500 p-2 flex items-center justify-center rounded-full">
-                    <AiOutlineRobot className="text-white w-4 h-4" />
+                <div className="flex items-start">
+                  <div className="bg-gray-500 p-1 md:p-2 rounded-full">
+                    <AiOutlineRobot className="text-white w-4 h-4 md:w-5 md:h-5" />
                   </div>
                 </div>
               )}
               <div
-                className={`p-3 shadow-md max-w-4xl ${
+                className={`p-2 md:p-3 shadow-md max-w-[80%] md:max-w-4xl ${
                   message.sender === "user"
                     ? "bg-green-500 text-white rounded-tr-sm rounded-br-lg rounded-tl-lg rounded-bl-lg"
                     : "bg-white text-gray-800 border rounded-tr-lg rounded-br-lg rounded-tl-sm rounded-bl-lg"
@@ -227,19 +231,19 @@ export default function LandingPage() {
       {/* Footer for input box */}
       <form
         onSubmit={handleSendMessage}
-        className="flex items-center p-4 w-4/5 justify-center m-auto border-t-0 bg-transparent"
+        className="flex items-center p-2 md:p-4 w-full md:w-4/5 justify-center m-auto bg-transparent"
       >
-        <div className="flex items-center w-full border rounded-md shadow-lg box-shadow">
+        <div className="flex items-center w-full border rounded-md shadow-lg">
           <input
             type="text"
             placeholder="Send a message..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            className="flex-1 p-2 px-8 rounded-sm focus:outline-none"
+            className="flex-1 p-2 px-4 md:px-8 rounded-sm focus:outline-none"
           />
           <button
             type="submit"
-            className="p-3 px-8 text-gray-500 hover:text-gray-700 rounded-sm"
+            className="p-2 md:p-3 px-4 md:px-8 text-gray-500 hover:text-gray-700 rounded-sm"
             aria-label="Send message"
           >
             ➤
