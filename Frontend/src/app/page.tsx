@@ -34,13 +34,10 @@ export default function LandingPage() {
       formData.append("file", file);
 
       try {
-        const response = await fetch(
-          "https://chat-with-pdf-backend.vercel.app/upload-pdf/",
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
+        const response = await fetch("http://127.0.0.1:8000/upload-pdf/", {
+          method: "POST",
+          body: formData,
+        });
         if (!response.ok) {
           throw new Error("Failed to upload PDF");
         }
@@ -104,14 +101,11 @@ export default function LandingPage() {
         },
       ];
 
-      const response = await fetch(
-        "https://chat-with-pdf-backend.vercel.app/chat-completion/",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
+      const response = await fetch("http://127.0.0.1:8000/chat-completion/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to get response from chat API");
